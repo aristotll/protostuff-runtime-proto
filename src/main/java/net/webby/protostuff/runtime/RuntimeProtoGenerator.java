@@ -133,7 +133,7 @@ public class RuntimeProtoGenerator implements ProtoGenerator {
         final StringBuilder sb = new StringBuilder();
         for (Object val : enumClass.getEnumConstants()) {
             Enum<?> v = (Enum<?>) val;
-            sb.append("  ").append(val).append(" = ").append(v.ordinal() + 1).append(";\n");
+            sb.append(val).append(" = ").append(v.ordinal() + 1).append(";\n");
         }
         template.setAttribute("fields", sb.toString());
 
@@ -257,7 +257,10 @@ public class RuntimeProtoGenerator implements ProtoGenerator {
                     output.append("repeated ");
                 }
 
-                output.append(fieldType).append(" ").append(field.name).append(" = ").append(field.number).append(";\n");
+                output.append(fieldType).append(" ")
+                        // https://stackoverflow.com/a/10310607/4680436 为了不引入 guava 依赖的权宜之计
+                        .append(field.name.replaceAll("([a-z])([A-Z]+)","$1_$2").toLowerCase())
+                        .append(" = ").append(field.number).append(";\n");
 
             }
 
